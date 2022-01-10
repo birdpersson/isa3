@@ -1,10 +1,13 @@
 package com.isa35.isa3.controller;
 
 import com.isa35.isa3.dto.JwtAuthenticationRequest;
+import com.isa35.isa3.dto.UserRequest;
 import com.isa35.isa3.dto.UserTokenState;
 import com.isa35.isa3.model.User;
 import com.isa35.isa3.security.TokenUtils;
+import com.isa35.isa3.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +31,9 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    UserService userService;
+
     @PostMapping("/login")
     public ResponseEntity<UserTokenState> createAuthenticationToken(
             @RequestBody JwtAuthenticationRequest authenticationRequest, HttpServletResponse response) {
@@ -43,6 +49,11 @@ public class AuthenticationController {
         int expiresIn = tokenUtils.getExpiredIn();
 
         return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<User> create(@RequestBody UserRequest userRequest) throws RuntimeException {
+        return new ResponseEntity<>(userService.save(userRequest), HttpStatus.CREATED);
     }
 
 }
