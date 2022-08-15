@@ -65,9 +65,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(HttpMethod.POST, "/auth/login");
-        web.ignoring().antMatchers(HttpMethod.GET, "/", "/webjars/**",
-                "/cabin/**",
-                "/*.html", "/favicon.ico", "/**/*.html", "/**/*.css", "/**/*.js");
+        web.ignoring().antMatchers(HttpMethod.GET, "/", "/cabin/**",
+                "/webjars/**", "/*.html", "/favicon.ico", "/**/*.html", "/**/*.css", "/**/*.js");
     }
 
 }

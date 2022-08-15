@@ -1,6 +1,7 @@
 package com.isa35.isa3.model;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Collection;
 
 @Entity
@@ -20,10 +21,10 @@ public class Cabin {
     private String description;
 
     @Column
-    private Long availableForm;
+    private Instant availableFrom;
 
     @Column
-    private Long availableTo;
+    private Instant availableTo;
 
     @Column
     private String priceList;
@@ -85,19 +86,19 @@ public class Cabin {
         this.images = images;
     }
 
-    public Long getAvailableForm() {
-        return availableForm;
+    public Instant getAvailableFrom() {
+        return availableFrom;
     }
 
-    public void setAvailableForm(Long availableForm) {
-        this.availableForm = availableForm;
+    public void setAvailableFrom(Instant availableFrom) {
+        this.availableFrom = availableFrom;
     }
 
-    public Long getAvailableTo() {
+    public Instant getAvailableTo() {
         return availableTo;
     }
 
-    public void setAvailableTo(Long availableTo) {
+    public void setAvailableTo(Instant availableTo) {
         this.availableTo = availableTo;
     }
 

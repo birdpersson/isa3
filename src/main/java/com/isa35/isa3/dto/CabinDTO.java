@@ -1,12 +1,14 @@
 package com.isa35.isa3.dto;
 
+import java.time.Instant;
+
 public class CabinDTO {
 
     private String name;
     private String address;
     private String description;
-    private Long availableFrom;
-    private Long availableTo;
+    private Instant availableFrom;
+    private Instant availableTo;
     private String priceList;
     private String rules;
     private int rooms;
@@ -36,19 +38,19 @@ public class CabinDTO {
         this.description = description;
     }
 
-    public Long getAvailableFrom() {
+    public Instant getAvailableFrom() {
         return availableFrom;
     }
 
-    public void setAvailableFrom(Long availableFrom) {
+    public void setAvailableFrom(Instant availableFrom) {
         this.availableFrom = availableFrom;
     }
 
-    public Long getAvailableTo() {
+    public Instant getAvailableTo() {
         return availableTo;
     }
 
-    public void setAvailableTo(Long availableTo) {
+    public void setAvailableTo(Instant availableTo) {
         this.availableTo = availableTo;
     }
 
