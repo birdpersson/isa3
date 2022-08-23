@@ -1,10 +1,12 @@
 package com.isa35.isa3.dto;
 
+import com.isa35.isa3.model.User;
+
 public class UserTokenState {
 
     private String accessToken;
     private Long expiresIn;
-    private String role;
+    private User.Role role;
 
     public UserTokenState() {
         this.accessToken = null;
@@ -12,7 +14,7 @@ public class UserTokenState {
         this.role = null;
     }
 
-    public UserTokenState(String accessToken, long expiresIn, String role) {
+    public UserTokenState(String accessToken, long expiresIn, User.Role role) {
         this.accessToken = accessToken;
         this.expiresIn = expiresIn;
         this.role = role;
@@ -34,11 +36,11 @@ public class UserTokenState {
         this.expiresIn = expiresIn;
     }
 
-    public String getRole() {
+    public User.Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(User.Role role) {
         this.role = role;
     }
 }

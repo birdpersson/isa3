@@ -34,6 +34,10 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
     public User save(UserRequest userRequest) {
         User u = new User();
         u.setUsername(userRequest.getUsername());
@@ -44,7 +48,7 @@ public class UserService implements UserDetailsService {
         u.setCity(userRequest.getCity());
         u.setCountry(userRequest.getCountry());
         u.setPhone(userRequest.getPhone());
-        u.setRole("USER");
+        u.setRole(User.Role.USER);
         u.setEnabled(true);
 
         List<Authority> auth = authService.findByName("ROLE_USER");

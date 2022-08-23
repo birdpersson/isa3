@@ -8,5 +8,5 @@ INSERT INTO AUTHORITY (name) VALUES ('ROLE_ADMIN');
 INSERT INTO USER_AUTHORITY (user_id, authority_id) VALUES (1, 1);
 INSERT INTO USER_AUTHORITY (user_id, authority_id) VALUES (2, 2);
 
-INSERT INTO CABIN (name, address, description, available_from, available_to, price_list, rules, rooms, beds) VALUES ('One', 'One Street', 'About One', null, null, 'free', 'Mine', 3, 2);
-INSERT INTO CABIN (name, address, description, available_from, available_to, price_list, rules, rooms, beds) VALUES ('Two', 'Two Street', 'About Two', null, null, 'expensive', 'Dine', 5, 1);
+INSERT INTO CABIN (name, address, description, availability, price_list, rules, rooms, beds) VALUES ('One', 'One Street', 'About One', null, 'free', 'Mine', 3, 2);
+INSERT INTO CABIN (name, address, description, availability, price_list, rules, rooms, beds) VALUES ('Two', 'Two Street', 'About Two', null, 'expensive', 'Dine', 5, 1);

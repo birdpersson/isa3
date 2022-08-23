@@ -12,6 +12,8 @@ import java.util.List;
 @Table(name = "users")
 public class User implements UserDetails {
 
+    public enum Role {ADMIN, USER, HOST}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,7 +44,13 @@ public class User implements UserDetails {
     private String phone;
 
     @Column
-    private String role;
+    private Role role;
+
+    @OneToMany
+    private List<Cabin> cabins;
+
+    @OneToMany
+    private List<Reservation> reservations;
 
     @Column(nullable = false)
     private boolean enabled;
@@ -127,11 +135,11 @@ public class User implements UserDetails {
         this.phone = phone;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

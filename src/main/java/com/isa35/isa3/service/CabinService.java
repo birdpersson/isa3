@@ -9,6 +9,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.threeten.extra.Interval;
 
 import java.io.File;
 import java.io.InputStream;
@@ -39,8 +40,9 @@ public class CabinService {
         c.setName(dto.getName());
         c.setAddress(dto.getAddress());
         c.setDescription(dto.getDescription());
-        c.setAvailableFrom(dto.getAvailableFrom());
-        c.setAvailableTo(dto.getAvailableTo());
+        c.setAvailability(Interval.of(
+                dto.getAvailableFrom(),
+                dto.getAvailableTo()));
         c.setPriceList(dto.getPriceList());
         c.setRules(dto.getRules());
         c.setRooms(dto.getRooms());
@@ -53,8 +55,9 @@ public class CabinService {
         c.setName(dto.getName());
         c.setAddress(dto.getAddress());
         c.setDescription(dto.getDescription());
-        c.setAvailableFrom(dto.getAvailableFrom());
-        c.setAvailableTo(dto.getAvailableTo());
+        c.setAvailability(Interval.of(
+                dto.getAvailableFrom(),
+                dto.getAvailableTo()));
         c.setPriceList(dto.getPriceList());
         c.setRules(dto.getRules());
         c.setRooms(dto.getRooms());
@@ -82,7 +85,7 @@ public class CabinService {
                     System.out.println(resource);
                     Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
                 }
-                paths.add(path + File.separator + fileName);
+                paths.add(fileName);
             } catch (Exception e) {
                 e.printStackTrace();
             }

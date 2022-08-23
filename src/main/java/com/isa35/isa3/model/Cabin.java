@@ -1,7 +1,8 @@
 package com.isa35.isa3.model;
 
+import org.threeten.extra.Interval;
+
 import javax.persistence.*;
-import java.time.Instant;
 import java.util.Collection;
 
 @Entity
@@ -21,10 +22,7 @@ public class Cabin {
     private String description;
 
     @Column
-    private Instant availableFrom;
-
-    @Column
-    private Instant availableTo;
+    private Interval availability;
 
     @Column
     private String priceList;
@@ -38,13 +36,14 @@ public class Cabin {
     @Column
     private int beds;
 
+    @ManyToOne
+    private User host;
+
+    @OneToMany
+    private Collection<Reservation> reservations;
+
     @ElementCollection
     private Collection<String> images;
-
-    @Column
-    private String username; //HOST
-
-    // private Collection<Reservation> reservations;
 
     public Long getId() {
         return id;
@@ -78,6 +77,22 @@ public class Cabin {
         this.description = description;
     }
 
+    public User getHost() {
+        return host;
+    }
+
+    public void setHost(User host) {
+        this.host = host;
+    }
+
+    public Collection<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(Collection<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
     public Collection<String> getImages() {
         return images;
     }
@@ -86,20 +101,12 @@ public class Cabin {
         this.images = images;
     }
 
-    public Instant getAvailableFrom() {
-        return availableFrom;
+    public Interval getAvailability() {
+        return availability;
     }
 
-    public void setAvailableFrom(Instant availableFrom) {
-        this.availableFrom = availableFrom;
-    }
-
-    public Instant getAvailableTo() {
-        return availableTo;
-    }
-
-    public void setAvailableTo(Instant availableTo) {
-        this.availableTo = availableTo;
+    public void setAvailability(Interval availability) {
+        this.availability = availability;
     }
 
     public int getRooms() {
@@ -116,14 +123,6 @@ public class Cabin {
 
     public void setBeds(int beds) {
         this.beds = beds;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getRules() {
