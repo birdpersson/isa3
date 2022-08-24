@@ -52,6 +52,9 @@ public class User implements UserDetails {
     @OneToMany
     private List<Reservation> reservations;
 
+    @OneToMany
+    private List<Review> reviews;
+
     @Column(nullable = false)
     private boolean enabled;
 

@@ -2,8 +2,10 @@ package com.isa35.isa3.controller;
 
 import com.isa35.isa3.dto.CabinDTO;
 import com.isa35.isa3.dto.ReservationDTO;
+import com.isa35.isa3.dto.ReviewDTO;
 import com.isa35.isa3.model.Cabin;
 import com.isa35.isa3.model.Reservation;
+import com.isa35.isa3.model.Review;
 import com.isa35.isa3.model.User;
 import com.isa35.isa3.security.TokenUtils;
 import com.isa35.isa3.service.CabinService;
@@ -76,6 +78,12 @@ public class CabinController {
     public ResponseEntity<Reservation> createPromotion(@PathVariable String id, @RequestBody ReservationDTO dto) {
         Cabin cabin = cabinService.findById(Long.parseLong(id));
         return new ResponseEntity<>(reservationService.promote(cabin, dto), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{id}/review")
+    public ResponseEntity<Review> createReview(@PathVariable String id, @RequestBody ReviewDTO dto, HttpServletRequest request) {
+        Cabin cabin = cabinService.findById(Long.parseLong(id));
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 }

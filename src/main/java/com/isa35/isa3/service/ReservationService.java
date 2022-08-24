@@ -23,7 +23,7 @@ public class ReservationService {
         return repository.findById(id).orElseGet(null);
     }
 
-    public Reservation create(User user, Cabin cabin, ReservationDTO dto) {
+    public Reservation create(User guest, Cabin cabin, ReservationDTO dto) {
         Reservation r = new Reservation();
         Interval interval = Interval.of(dto.getStart(), Duration.ofDays(dto.getDays()));
 
@@ -36,7 +36,7 @@ public class ReservationService {
 
         r.setType(Reservation.Type.RESERVATION);
         r.setCabin(cabin);
-        r.setGuest(user);
+        r.setGuest(guest);
         r.setPrice(dto.getPrice());
 
         return repository.save(r);

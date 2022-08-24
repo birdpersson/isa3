@@ -42,6 +42,9 @@ public class Cabin {
     @OneToMany
     private Collection<Reservation> reservations;
 
+    @OneToMany
+    private Collection<Review> reviews;
+
     @ElementCollection
     private Collection<String> images;
 
@@ -91,6 +94,14 @@ public class Cabin {
 
     public void setReservations(Collection<Reservation> reservations) {
         this.reservations = reservations;
+    }
+
+    public Collection<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(Collection<Review> reviews) {
+        this.reviews = reviews;
     }
 
     public Collection<String> getImages() {
