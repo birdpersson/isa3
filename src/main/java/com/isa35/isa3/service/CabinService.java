@@ -1,6 +1,7 @@
 package com.isa35.isa3.service;
 
 import com.isa35.isa3.dto.CabinDTO;
+import com.isa35.isa3.dto.CabinQuery;
 import com.isa35.isa3.model.Cabin;
 import com.isa35.isa3.repository.CabinRepository;
 import org.apache.commons.io.FilenameUtils;
@@ -17,9 +18,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.Timestamp;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CabinService {
@@ -35,14 +39,34 @@ public class CabinService {
         return cabinRepository.findAll();
     }
 
+    public List<Cabin> findByAvailability(CabinQuery query) {
+        List<Cabin> cabins = cabinRepository.findAll();
+
+        cabins = cabins.stream().filter(cabin -> cabin.getName().toLowerCase().contains(query.getName().toLowerCase())).collect(Collectors.toList());
+        cabins = cabins.stream().filter(cabin -> cabin.getAddress().toLowerCase().contains(query.getAddress().toLowerCase())).collect(Collectors.toList());
+        cabins = cabins.stream().filter(cabin -> {
+            Interval availability = cabin.getAvailability();
+            Interval interval = Interval.of(query.getStart(), Duration.ofDays(query.getDays()));
+
+            System.out.println(cabin.getId() + ": " + cabin.getName());
+            System.out.println("available:" + availability);
+            System.out.println("intervals:" + interval);
+
+            return availability.encloses(interval);
+        }).collect(Collectors.toList());
+
+        return cabins;
+    }
+
     public Cabin create(CabinDTO dto) {
         Cabin c = new Cabin();
         c.setName(dto.getName());
         c.setAddress(dto.getAddress());
         c.setDescription(dto.getDescription());
-        c.setAvailability(Interval.of(
-                dto.getAvailableFrom(),
-                dto.getAvailableTo()));
+
+        c.setAvailabilityStart(dto.getAvailableFrom());
+        c.setAvailabilityEnd(dto.getAvailableTo());
+
         c.setPriceList(dto.getPriceList());
         c.setRules(dto.getRules());
         c.setRooms(dto.getRooms());
@@ -55,9 +79,9 @@ public class CabinService {
         c.setName(dto.getName());
         c.setAddress(dto.getAddress());
         c.setDescription(dto.getDescription());
-        c.setAvailability(Interval.of(
-                dto.getAvailableFrom(),
-                dto.getAvailableTo()));
+//        c.setAvailability(Interval.of(
+//                dto.getAvailableFrom(),
+//                dto.getAvailableTo()));
         c.setPriceList(dto.getPriceList());
         c.setRules(dto.getRules());
         c.setRooms(dto.getRooms());

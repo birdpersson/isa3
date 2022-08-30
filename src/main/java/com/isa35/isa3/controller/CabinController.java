@@ -3,6 +3,7 @@ package com.isa35.isa3.controller;
 import com.isa35.isa3.dto.CabinDTO;
 import com.isa35.isa3.dto.ReservationDTO;
 import com.isa35.isa3.dto.ReviewDTO;
+import com.isa35.isa3.dto.CabinQuery;
 import com.isa35.isa3.model.Cabin;
 import com.isa35.isa3.model.Reservation;
 import com.isa35.isa3.model.Review;
@@ -35,6 +36,11 @@ public class CabinController {
 
     @Autowired
     private ReservationService reservationService;
+
+    @PostMapping("/search")
+    public ResponseEntity<List<Cabin>> searchCabins(@RequestBody CabinQuery searchQuery) {
+        return new ResponseEntity<>(cabinService.findByAvailability(searchQuery), HttpStatus.OK);
+    }
 
     @GetMapping("/")
     public ResponseEntity<List<Cabin>> getCabins() {

@@ -3,6 +3,7 @@ package com.isa35.isa3.model;
 import org.threeten.extra.Interval;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Collection;
 
 @Entity
@@ -22,7 +23,10 @@ public class Cabin {
     private String description;
 
     @Column
-    private Interval availability;
+    private Instant availabilityStart;
+
+    @Column
+    private Instant availabilityEnd;
 
     @Column
     private String priceList;
@@ -41,6 +45,9 @@ public class Cabin {
 
     @OneToMany
     private Collection<Reservation> reservations;
+
+    @OneToMany
+    private Collection<Amenity> amenities;
 
     @OneToMany
     private Collection<Review> reviews;
@@ -96,6 +103,14 @@ public class Cabin {
         this.reservations = reservations;
     }
 
+    public Collection<Amenity> getAmenities() {
+        return amenities;
+    }
+
+    public void setAmenities(Collection<Amenity> amenities) {
+        this.amenities = amenities;
+    }
+
     public Collection<Review> getReviews() {
         return reviews;
     }
@@ -112,12 +127,24 @@ public class Cabin {
         this.images = images;
     }
 
-    public Interval getAvailability() {
-        return availability;
+    public Instant getAvailabilityStart() {
+        return availabilityStart;
     }
 
-    public void setAvailability(Interval availability) {
-        this.availability = availability;
+    public void setAvailabilityStart(Instant availabilityStart) {
+        this.availabilityStart = availabilityStart;
+    }
+
+    public Instant getAvailabilityEnd() {
+        return availabilityEnd;
+    }
+
+    public void setAvailabilityEnd(Instant availabilityEnd) {
+        this.availabilityEnd = availabilityEnd;
+    }
+
+    public Interval getAvailability() {
+        return Interval.of(getAvailabilityStart(), getAvailabilityEnd());
     }
 
     public int getRooms() {
