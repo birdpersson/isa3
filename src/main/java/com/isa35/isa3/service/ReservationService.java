@@ -1,6 +1,6 @@
 package com.isa35.isa3.service;
 
-import com.isa35.isa3.dto.ReservationDTO;
+import com.isa35.isa3.dto.ReservationRequest;
 import com.isa35.isa3.model.Cabin;
 import com.isa35.isa3.model.Reservation;
 import com.isa35.isa3.model.User;
@@ -23,26 +23,19 @@ public class ReservationService {
         return repository.findById(id).orElseGet(null);
     }
 
-    public Reservation create(User guest, Cabin cabin, ReservationDTO dto) {
+    public Reservation create(User guest, Cabin cabin, ReservationRequest dto) {
         Reservation r = new Reservation();
-        Interval interval = Interval.of(dto.getStart(), Duration.ofDays(dto.getDays()));
-
-        for (Reservation reservation : cabin.getReservations()) {
-            if (interval.overlaps(reservation.getInterval())) throw new DateTimeException("Reservation Overlap");
-        }
-
-        if (cabin.getAvailability().encloses(interval)) r.setInterval(interval);
-        else throw new DateTimeException("Reservation Exceeds Availability Range");
-
         r.setType(Reservation.Type.RESERVATION);
-        r.setCabin(cabin);
-        r.setGuest(guest);
+        r.setInterval(Interval.of(dto.getStart(), Duration.ofDays(dto.getDays())));
         r.setPrice(dto.getPrice());
-
+        r.setGuest(guest);
+        r.setCabin(cabin);
+        guest.addReservation(r);
+        cabin.addReservation(r);
         return repository.save(r);
     }
 
-    public Reservation promote(Cabin cabin, ReservationDTO dto) {
+    public Reservation promote(Cabin cabin, ReservationRequest dto) {
         Reservation r = new Reservation();
         Interval interval = Interval.of(dto.getStart(), Duration.ofDays(dto.getDays()));
 

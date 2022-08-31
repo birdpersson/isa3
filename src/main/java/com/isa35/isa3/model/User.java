@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Entity
@@ -50,7 +51,7 @@ public class User implements UserDetails {
     private List<Cabin> cabins;
 
     @OneToMany
-    private List<Reservation> reservations;
+    private Collection<Reservation> reservations = new HashSet<>();
 
     @OneToMany
     private List<Review> reviews;
@@ -144,6 +145,18 @@ public class User implements UserDetails {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Collection<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(Collection<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
+    public void addReservation(Reservation reservation) {
+        reservations.add(reservation);
     }
 
     @Override

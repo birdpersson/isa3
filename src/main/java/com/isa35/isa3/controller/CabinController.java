@@ -1,9 +1,6 @@
 package com.isa35.isa3.controller;
 
-import com.isa35.isa3.dto.CabinDTO;
-import com.isa35.isa3.dto.ReservationDTO;
-import com.isa35.isa3.dto.ReviewDTO;
-import com.isa35.isa3.dto.CabinQuery;
+import com.isa35.isa3.dto.*;
 import com.isa35.isa3.model.Cabin;
 import com.isa35.isa3.model.Reservation;
 import com.isa35.isa3.model.Review;
@@ -17,8 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.threeten.extra.Interval;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Duration;
 import java.util.List;
 
 @RestController
@@ -73,15 +72,30 @@ public class CabinController {
     }
 
     @PostMapping("/{id}/reservation")
-    public ResponseEntity<Reservation> createReservation(@PathVariable String id, @RequestBody ReservationDTO dto, HttpServletRequest request) {
+    public ResponseEntity<ReservationResponse> createReservation(
+            @PathVariable String id, @RequestBody ReservationRequest dto, HttpServletRequest request) {
         User user = userService.findByUsername(tokenUtils.getUsernameFromToken(tokenUtils.getToken(request)));
         Cabin cabin = cabinService.findById(Long.parseLong(id));
 
-        return new ResponseEntity<>(reservationService.create(user, cabin, dto), HttpStatus.CREATED);
+        Interval interval = Interval.of(dto.getStart(), Duration.ofDays(dto.getDays()));
+
+        System.out.println("Available:" + cabin.getAvailability());
+        System.out.println("Reserving:" + interval);
+
+        if (!cabin.getAvailability().encloses(interval))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        for (Reservation reservation : cabin.getReservations()) {
+            System.out.println("Intervals:" + reservation.getInterval());
+            if (interval.overlaps(reservation.getInterval()))
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Reservation reservation = reservationService.create(user, cabin, dto);
+        return new ResponseEntity<>(new ReservationResponse(reservation), HttpStatus.CREATED);
     }
 
     @PostMapping("/{id}/promotion")
-    public ResponseEntity<Reservation> createPromotion(@PathVariable String id, @RequestBody ReservationDTO dto) {
+    public ResponseEntity<Reservation> createPromotion(@PathVariable String id, @RequestBody ReservationRequest dto) {
         Cabin cabin = cabinService.findById(Long.parseLong(id));
         return new ResponseEntity<>(reservationService.promote(cabin, dto), HttpStatus.CREATED);
     }

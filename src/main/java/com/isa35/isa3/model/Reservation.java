@@ -4,6 +4,7 @@ import org.threeten.extra.Interval;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Collection;
 
 @Entity
 public class Reservation {
@@ -15,7 +16,7 @@ public class Reservation {
     private Long id;
 
     @Column
-    private Interval interval;
+    public Type type;
 
     @ManyToOne
     private Cabin cabin;
@@ -24,13 +25,19 @@ public class Reservation {
     private User guest;
 
     @Column
-    public Type type;
-
-    @Column
     private Instant expiry;
 
     @Column
-    private int price;
+    private Instant start;
+
+    @Column (name = "finish")
+    private Instant end;
+
+    @Column
+    private Integer price;
+
+    @OneToMany
+    private Collection<Amenity> amenities;
 
     public Long getId() {
         return id;
@@ -41,11 +48,12 @@ public class Reservation {
     }
 
     public Interval getInterval() {
-        return interval;
+        return Interval.of(getStart(), getEnd());
     }
 
     public void setInterval(Interval interval) {
-        this.interval = interval;
+        this.start = interval.getStart();
+        this.end = interval.getEnd();
     }
 
     public Cabin getCabin() {
@@ -78,6 +86,22 @@ public class Reservation {
 
     public void setExpiry(Instant expiry) {
         this.expiry = expiry;
+    }
+
+    public Instant getStart() {
+        return start;
+    }
+
+    public void setStart(Instant start) {
+        this.start = start;
+    }
+
+    public Instant getEnd() {
+        return end;
+    }
+
+    public void setEnd(Instant end) {
+        this.end = end;
     }
 
     public int getPrice() {

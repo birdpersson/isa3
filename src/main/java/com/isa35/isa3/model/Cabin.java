@@ -5,6 +5,7 @@ import org.threeten.extra.Interval;
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.HashSet;
 
 @Entity
 public class Cabin {
@@ -44,7 +45,7 @@ public class Cabin {
     private User host;
 
     @OneToMany
-    private Collection<Reservation> reservations;
+    private Collection<Reservation> reservations = new HashSet<>();
 
     @OneToMany
     private Collection<Amenity> amenities;
@@ -101,6 +102,10 @@ public class Cabin {
 
     public void setReservations(Collection<Reservation> reservations) {
         this.reservations = reservations;
+    }
+
+    public void addReservation(Reservation reservation) {
+        reservations.add(reservation);
     }
 
     public Collection<Amenity> getAmenities() {

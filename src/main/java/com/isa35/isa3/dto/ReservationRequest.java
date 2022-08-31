@@ -6,8 +6,8 @@ public class ReservationDTO {
 
     private Instant expiry;
     private Instant start;
-    private long days;
-    private int price;
+    private Long days;
+    private Integer price;
 
     public Instant getExpiry() {
         return expiry;
