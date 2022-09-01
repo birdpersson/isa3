@@ -2,7 +2,7 @@ package com.isa35.isa3.dto;
 
 import java.time.Instant;
 
-public class ReservationDTO {
+public class ReservationRequest {
 
     private Instant expiry;
     private Instant start;

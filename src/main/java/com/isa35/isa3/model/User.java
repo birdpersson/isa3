@@ -48,13 +48,13 @@ public class User implements UserDetails {
     private Role role;
 
     @OneToMany
-    private List<Cabin> cabins;
+    private Collection<Cabin> cabins = new HashSet<>();
 
     @OneToMany
     private Collection<Reservation> reservations = new HashSet<>();
 
     @OneToMany
-    private List<Review> reviews;
+    private Collection<Review> reviews = new HashSet<>();
 
     @Column(nullable = false)
     private boolean enabled;
@@ -147,6 +147,18 @@ public class User implements UserDetails {
         this.role = role;
     }
 
+    public Collection<Cabin> getCabins() {
+        return cabins;
+    }
+
+    public void setCabins(Collection<Cabin> cabins) {
+        this.cabins = cabins;
+    }
+
+    public void addCabin(Cabin cabin) {
+        cabins.add(cabin);
+    }
+
     public Collection<Reservation> getReservations() {
         return reservations;
     }
@@ -157,6 +169,18 @@ public class User implements UserDetails {
 
     public void addReservation(Reservation reservation) {
         reservations.add(reservation);
+    }
+
+    public Collection<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(Collection<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public void addReview(Review review) {
+        reviews.add(review);
     }
 
     @Override

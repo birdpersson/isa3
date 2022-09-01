@@ -3,6 +3,7 @@ package com.isa35.isa3.model;
 import org.threeten.extra.Interval;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,16 +31,16 @@ public class Cabin {
     private Instant availabilityEnd;
 
     @Column
-    private String priceList;
+    private Integer people;
+
+    @Column
+    private Integer price;
+
+    @Column
+    private Integer cost;
 
     @Column
     private String rules;
-
-    @Column
-    private int rooms;
-
-    @Column
-    private int beds;
 
     @ManyToOne
     private User host;
@@ -48,10 +49,10 @@ public class Cabin {
     private Collection<Reservation> reservations = new HashSet<>();
 
     @OneToMany
-    private Collection<Amenity> amenities;
+    private Collection<Amenity> amenities = new HashSet<>();
 
     @OneToMany
-    private Collection<Review> reviews;
+    private Collection<Review> reviews = new HashSet<>();
 
     @ElementCollection
     private Collection<String> images;
@@ -116,12 +117,20 @@ public class Cabin {
         this.amenities = amenities;
     }
 
+    public void addAmenity(Amenity amenity) {
+        amenities.add(amenity);
+    }
+
     public Collection<Review> getReviews() {
         return reviews;
     }
 
     public void setReviews(Collection<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public void addReview(Review review) {
+        reviews.add(review);
     }
 
     public Collection<String> getImages() {
@@ -152,20 +161,41 @@ public class Cabin {
         return Interval.of(getAvailabilityStart(), getAvailabilityEnd());
     }
 
-    public int getRooms() {
-        return rooms;
+    public void setAvailability(Interval availability) {
+        this.availabilityStart = availability.getStart();
+        this.availabilityEnd = availability.getEnd();
     }
 
-    public void setRooms(int rooms) {
-        this.rooms = rooms;
+    public Instant getOffsetStart() {
+        return Interval.of(availabilityStart, Duration.ofHours(2)).getEnd();
     }
 
-    public int getBeds() {
-        return beds;
+    public Instant getOffsetEnd() {
+        return Interval.of(availabilityEnd, Duration.ofHours(2)).getEnd();
     }
 
-    public void setBeds(int beds) {
-        this.beds = beds;
+    public Integer getPeople() {
+        return people;
+    }
+
+    public void setPeople(Integer people) {
+        this.people = people;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public Integer getCost() {
+        return cost;
+    }
+
+    public void setCost(Integer cost) {
+        this.cost = cost;
     }
 
     public String getRules() {
@@ -174,14 +204,6 @@ public class Cabin {
 
     public void setRules(String rules) {
         this.rules = rules;
-    }
-
-    public String getPriceList() {
-        return priceList;
-    }
-
-    public void setPriceList(String priceList) {
-        this.priceList = priceList;
     }
 
 }

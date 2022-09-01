@@ -18,6 +18,7 @@ import org.threeten.extra.Interval;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -42,22 +43,28 @@ public class CabinController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Cabin>> getCabins() {
-        return new ResponseEntity<>(cabinService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<CabinResponse>> getCabins() {
+        List<Cabin> cabins = cabinService.findAll();
+        List<CabinResponse> list = new ArrayList<>();
+        for (Cabin c : cabins) {
+            list.add(new CabinResponse(c));
+        }
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @PostMapping("/")
-    public ResponseEntity<Cabin> createCabin(@RequestBody CabinDTO cabinDTO) {
-        return new ResponseEntity<>(cabinService.create(cabinDTO), HttpStatus.CREATED);
+    public ResponseEntity<CabinResponse> createCabin(@RequestBody CabinRequest dto, HttpServletRequest request) {
+        User user = userService.findByUsername(tokenUtils.getUsernameFromToken(tokenUtils.getToken(request)));
+        return new ResponseEntity<>(new CabinResponse(cabinService.create(user, dto)), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cabin> getCabin(@PathVariable String id) {
-        return new ResponseEntity<>(cabinService.findById(Long.parseLong(id)), HttpStatus.OK);
+    public ResponseEntity<CabinResponse> getCabin(@PathVariable String id) {
+        return new ResponseEntity<>(new CabinResponse(cabinService.findById(Long.parseLong(id))), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cabin> editCabin(@RequestBody CabinDTO cabinDTO) {
+    public ResponseEntity<Cabin> editCabin(@RequestBody CabinRequest cabinDTO) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 

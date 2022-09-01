@@ -2,17 +2,16 @@ package com.isa35.isa3.dto;
 
 import java.time.Instant;
 
-public class CabinDTO {
-
+public class CabinRequest {
     private String name;
     private String address;
     private String description;
     private Instant availableFrom;
     private Instant availableTo;
-    private String priceList;
+    private Integer people;
+    private Integer price;
+    private Integer cost;
     private String rules;
-    private int rooms;
-    private int beds;
 
     public String getName() {
         return name;
@@ -54,12 +53,28 @@ public class CabinDTO {
         this.availableTo = availableTo;
     }
 
-    public String getPriceList() {
-        return priceList;
+    public Integer getPeople() {
+        return people;
     }
 
-    public void setPriceList(String priceList) {
-        this.priceList = priceList;
+    public void setPeople(Integer people) {
+        this.people = people;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public Integer getCost() {
+        return cost;
+    }
+
+    public void setCost(Integer cost) {
+        this.cost = cost;
     }
 
     public String getRules() {
@@ -68,21 +83,5 @@ public class CabinDTO {
 
     public void setRules(String rules) {
         this.rules = rules;
-    }
-
-    public int getRooms() {
-        return rooms;
-    }
-
-    public void setRooms(int rooms) {
-        this.rooms = rooms;
-    }
-
-    public int getBeds() {
-        return beds;
-    }
-
-    public void setBeds(int beds) {
-        this.beds = beds;
     }
 }

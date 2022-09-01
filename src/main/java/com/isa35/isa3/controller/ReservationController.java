@@ -1,7 +1,6 @@
 package com.isa35.isa3.controller;
 
-import com.isa35.isa3.dto.ReservationDTO;
-import com.isa35.isa3.model.Cabin;
+import com.isa35.isa3.dto.ReservationRequest;
 import com.isa35.isa3.model.Reservation;
 import com.isa35.isa3.model.User;
 import com.isa35.isa3.security.TokenUtils;
@@ -28,7 +27,7 @@ public class ReservationController {
     private ReservationService reservationService;
 
     @PostMapping("/{cabinId}") // Create Reservation
-    public ResponseEntity<Reservation> createReservation(@PathVariable String cabinId, @RequestBody ReservationDTO dto, HttpServletRequest request) {
+    public ResponseEntity<Reservation> createReservation(@PathVariable String cabinId, @RequestBody ReservationRequest dto, HttpServletRequest request) {
         String username = tokenUtils.getUsernameFromToken(tokenUtils.getToken(request));
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }

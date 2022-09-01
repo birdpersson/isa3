@@ -1,8 +1,9 @@
 package com.isa35.isa3.service;
 
-import com.isa35.isa3.dto.CabinDTO;
 import com.isa35.isa3.dto.CabinQuery;
+import com.isa35.isa3.dto.CabinRequest;
 import com.isa35.isa3.model.Cabin;
+import com.isa35.isa3.model.User;
 import com.isa35.isa3.repository.CabinRepository;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,34 +58,34 @@ public class CabinService {
         return cabins;
     }
 
-    public Cabin create(CabinDTO dto) {
+    public Cabin create(User host, CabinRequest dto) {
         Cabin c = new Cabin();
         c.setName(dto.getName());
         c.setAddress(dto.getAddress());
         c.setDescription(dto.getDescription());
-
-        c.setAvailabilityStart(dto.getAvailableFrom());
-        c.setAvailabilityEnd(dto.getAvailableTo());
-
-        c.setPriceList(dto.getPriceList());
+        c.setAvailability(Interval.of(
+                dto.getAvailableFrom(),
+                dto.getAvailableTo()));
+        c.setPeople(dto.getPeople());
+        c.setPrice(dto.getPrice());
+        c.setCost(dto.getCost());
         c.setRules(dto.getRules());
-        c.setRooms(dto.getRooms());
-        c.setBeds(dto.getBeds());
+        c.setHost(host);
+        host.addCabin(c);
         return cabinRepository.save(c);
     }
 
-    public Cabin edit(CabinDTO dto, Long id) {
-        Cabin c = findById(id);
+    public Cabin edit(Cabin c, CabinRequest dto) {
         c.setName(dto.getName());
         c.setAddress(dto.getAddress());
         c.setDescription(dto.getDescription());
-//        c.setAvailability(Interval.of(
-//                dto.getAvailableFrom(),
-//                dto.getAvailableTo()));
-        c.setPriceList(dto.getPriceList());
+        c.setAvailability(Interval.of(
+                dto.getAvailableFrom(),
+                dto.getAvailableTo()));
+        c.setPeople(dto.getPeople());
         c.setRules(dto.getRules());
-        c.setRooms(dto.getRooms());
-        c.setBeds(dto.getBeds());
+        c.setPrice(dto.getPrice());
+        c.setCost(dto.getCost());
         return cabinRepository.save(c);
     }
 
