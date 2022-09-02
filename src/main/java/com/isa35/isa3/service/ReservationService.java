@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.threeten.extra.Interval;
 
-import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -26,7 +25,9 @@ public class ReservationService {
     public Reservation create(User guest, Cabin cabin, ReservationRequest dto) {
         Reservation r = new Reservation();
         r.setType(Reservation.Type.RESERVATION);
-        r.setInterval(Interval.of(dto.getStart(), Duration.ofDays(dto.getDays())));
+        r.setInterval(Interval.of(dto.getStart(), Duration.ofDays(dto.getDuration())));
+        r.setAmenities(dto.getAmenities());
+        r.setPeople(dto.getPeople());
         r.setPrice(dto.getPrice());
         r.setGuest(guest);
         r.setCabin(cabin);
@@ -37,20 +38,14 @@ public class ReservationService {
 
     public Reservation promote(Cabin cabin, ReservationRequest dto) {
         Reservation r = new Reservation();
-        Interval interval = Interval.of(dto.getStart(), Duration.ofDays(dto.getDays()));
-
-        for (Reservation reservation : cabin.getReservations()) {
-            if (interval.overlaps(reservation.getInterval())) throw new DateTimeException("Reservation Overlap");
-        }
-
-        if (cabin.getAvailability().encloses(interval)) r.setInterval(interval);
-        else throw new DateTimeException("Reservation Exceeds Availability Range");
-
         r.setType(Reservation.Type.PROMOTION);
+        r.setInterval(Interval.of(dto.getStart(), Duration.ofDays(dto.getDuration())));
+        r.setAmenities(dto.getAmenities());
         r.setExpiry(dto.getExpiry());
+        r.setPeople(dto.getPeople());
         r.setPrice(dto.getPrice());
         r.setCabin(cabin);
-
+        cabin.addReservation(r);
         return repository.save(r);
     }
 

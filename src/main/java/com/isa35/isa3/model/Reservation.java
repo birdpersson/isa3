@@ -8,7 +8,6 @@ import java.util.Collection;
 
 @Entity
 public class Reservation {
-
     public enum Type {RESERVATION, PROMOTION}
 
     @Id
@@ -18,26 +17,29 @@ public class Reservation {
     @Column
     public Type type;
 
+    @Column
+    private Instant start;
+
+    @Column(name = "finish")
+    private Instant end;
+
+    @Column
+    private Instant expiry;
+
+    @Column
+    private Integer people;
+
+    @Column
+    private Integer price;
+
     @ManyToOne
     private Cabin cabin;
 
     @ManyToOne
     private User guest;
 
-    @Column
-    private Instant expiry;
-
-    @Column
-    private Instant start;
-
-    @Column (name = "finish")
-    private Instant end;
-
-    @Column
-    private Integer price;
-
-    @OneToMany
-    private Collection<Amenity> amenities;
+    @ElementCollection
+    private Collection<String> amenities;
 
     public Long getId() {
         return id;
@@ -45,31 +47,6 @@ public class Reservation {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Interval getInterval() {
-        return Interval.of(getStart(), getEnd());
-    }
-
-    public void setInterval(Interval interval) {
-        this.start = interval.getStart();
-        this.end = interval.getEnd();
-    }
-
-    public Cabin getCabin() {
-        return cabin;
-    }
-
-    public void setCabin(Cabin cabin) {
-        this.cabin = cabin;
-    }
-
-    public User getGuest() {
-        return guest;
-    }
-
-    public void setGuest(User guest) {
-        this.guest = guest;
     }
 
     public Type getType() {
@@ -80,12 +57,13 @@ public class Reservation {
         this.type = type;
     }
 
-    public Instant getExpiry() {
-        return expiry;
+    public Interval getInterval() {
+        return Interval.of(getStart(), getEnd());
     }
 
-    public void setExpiry(Instant expiry) {
-        this.expiry = expiry;
+    public void setInterval(Interval interval) {
+        this.start = interval.getStart();
+        this.end = interval.getEnd();
     }
 
     public Instant getStart() {
@@ -104,12 +82,52 @@ public class Reservation {
         this.end = end;
     }
 
-    public int getPrice() {
+    public Instant getExpiry() {
+        return expiry;
+    }
+
+    public void setExpiry(Instant expiry) {
+        this.expiry = expiry;
+    }
+
+    public Integer getPeople() {
+        return people;
+    }
+
+    public void setPeople(Integer people) {
+        this.people = people;
+    }
+
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public Cabin getCabin() {
+        return cabin;
+    }
+
+    public void setCabin(Cabin cabin) {
+        this.cabin = cabin;
+    }
+
+    public User getGuest() {
+        return guest;
+    }
+
+    public void setGuest(User guest) {
+        this.guest = guest;
+    }
+
+    public Collection<String> getAmenities() {
+        return amenities;
+    }
+
+    public void setAmenities(Collection<String> amenities) {
+        this.amenities = amenities;
     }
 
 }

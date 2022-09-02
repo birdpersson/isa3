@@ -6,6 +6,7 @@ import com.isa35.isa3.model.Reservation;
 import com.isa35.isa3.model.Review;
 import com.isa35.isa3.model.User;
 import com.isa35.isa3.security.TokenUtils;
+import com.isa35.isa3.service.AmenityService;
 import com.isa35.isa3.service.CabinService;
 import com.isa35.isa3.service.ReservationService;
 import com.isa35.isa3.service.UserService;
@@ -35,11 +36,19 @@ public class CabinController {
     private CabinService cabinService;
 
     @Autowired
+    private AmenityService amenityService;
+
+    @Autowired
     private ReservationService reservationService;
 
     @PostMapping("/search")
-    public ResponseEntity<List<Cabin>> searchCabins(@RequestBody CabinQuery searchQuery) {
-        return new ResponseEntity<>(cabinService.findByAvailability(searchQuery), HttpStatus.OK);
+    public ResponseEntity<List<CabinResponse>> searchCabins(@RequestBody CabinQuery searchQuery) {
+        List<Cabin> cabins = cabinService.findByAvailability(searchQuery);
+        List<CabinResponse> list = new ArrayList<>();
+        for (Cabin c : cabins) {
+            list.add(new CabinResponse(c));
+        }
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/")
@@ -64,18 +73,24 @@ public class CabinController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cabin> editCabin(@RequestBody CabinRequest cabinDTO) {
+    public ResponseEntity<CabinResponse> editCabin(@RequestBody CabinRequest cabinDTO) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<Cabin> uploadImages(@PathVariable String id, @RequestParam("image") MultipartFile[] files) {
-        return new ResponseEntity<>(cabinService.upload(files, Long.parseLong(id)), HttpStatus.CREATED);
+    public ResponseEntity<CabinResponse> uploadImages(@PathVariable String id, @RequestParam("image") MultipartFile[] files) {
+        return new ResponseEntity<>(new CabinResponse(cabinService.upload(files, Long.parseLong(id))), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Cabin> deleteCabin(@PathVariable String id) {
+    public ResponseEntity<CabinResponse> deleteCabin(@PathVariable String id) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @PostMapping("/{id}/amenity")
+    public ResponseEntity<AmenityResponse> createAmenity(@PathVariable String id, @RequestBody AmenityRequest dto) {
+        Cabin cabin = cabinService.findById(Long.parseLong(id));
+        return new ResponseEntity<>(new AmenityResponse(amenityService.create(cabin, dto)), HttpStatus.CREATED);
     }
 
     @PostMapping("/{id}/reservation")
@@ -84,7 +99,7 @@ public class CabinController {
         User user = userService.findByUsername(tokenUtils.getUsernameFromToken(tokenUtils.getToken(request)));
         Cabin cabin = cabinService.findById(Long.parseLong(id));
 
-        Interval interval = Interval.of(dto.getStart(), Duration.ofDays(dto.getDays()));
+        Interval interval = Interval.of(dto.getStart(), Duration.ofDays(dto.getDuration()));
 
         System.out.println("Available:" + cabin.getAvailability());
         System.out.println("Reserving:" + interval);

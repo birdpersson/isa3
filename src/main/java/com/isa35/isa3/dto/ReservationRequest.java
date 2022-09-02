@@ -1,21 +1,15 @@
 package com.isa35.isa3.dto;
 
 import java.time.Instant;
+import java.util.ArrayList;
 
 public class ReservationRequest {
-
-    private Instant expiry;
     private Instant start;
-    private Long days;
+    private Long duration;
     private Integer price;
-
-    public Instant getExpiry() {
-        return expiry;
-    }
-
-    public void setExpiry(Instant expiry) {
-        this.expiry = expiry;
-    }
+    private Integer people;
+    private Instant expiry;
+    private ArrayList<String> amenities;
 
     public Instant getStart() {
         return start;
@@ -25,20 +19,43 @@ public class ReservationRequest {
         this.start = start;
     }
 
-    public long getDays() {
-        return days;
+    public Long getDuration() {
+        return duration;
     }
 
-    public void setDays(long days) {
-        this.days = days;
+    public void setDuration(Long duration) {
+        this.duration = duration;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
+    public Integer getPeople() {
+        return people;
+    }
+
+    public void setPeople(Integer people) {
+        this.people = people;
+    }
+
+    public Instant getExpiry() {
+        return expiry;
+    }
+
+    public void setExpiry(Instant expiry) {
+        this.expiry = expiry;
+    }
+
+    public ArrayList<String> getAmenities() {
+        return amenities;
+    }
+
+    public void setAmenities(ArrayList<String> amenities) {
+        this.amenities = amenities;
+    }
 }
