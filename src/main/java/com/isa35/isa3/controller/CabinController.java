@@ -1,10 +1,7 @@
 package com.isa35.isa3.controller;
 
 import com.isa35.isa3.dto.*;
-import com.isa35.isa3.model.Cabin;
-import com.isa35.isa3.model.Reservation;
-import com.isa35.isa3.model.Review;
-import com.isa35.isa3.model.User;
+import com.isa35.isa3.model.*;
 import com.isa35.isa3.security.TokenUtils;
 import com.isa35.isa3.service.AmenityService;
 import com.isa35.isa3.service.CabinService;
@@ -88,9 +85,14 @@ public class CabinController {
     }
 
     @PostMapping("/{id}/amenity")
-    public ResponseEntity<AmenityResponse> createAmenity(@PathVariable String id, @RequestBody AmenityRequest dto) {
+    public ResponseEntity<List<AmenityResponse>> createAmenity(@PathVariable String id, @RequestBody AmenityRequest dto) {
         Cabin cabin = cabinService.findById(Long.parseLong(id));
-        return new ResponseEntity<>(new AmenityResponse(amenityService.create(cabin, dto)), HttpStatus.CREATED);
+        Amenity amenity = amenityService.create(cabin, dto);
+        List<AmenityResponse> amenities = new ArrayList<>();
+        for (Amenity a : cabin.getAmenities()) {
+            amenities.add(new AmenityResponse(a));
+        }
+        return new ResponseEntity<>(amenities, HttpStatus.CREATED);
     }
 
     @PostMapping("/{id}/reservation")

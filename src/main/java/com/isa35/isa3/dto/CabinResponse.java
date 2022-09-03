@@ -1,8 +1,10 @@
 package com.isa35.isa3.dto;
 
+import com.isa35.isa3.model.Amenity;
 import com.isa35.isa3.model.Cabin;
 
-import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class CabinResponse {
     private final Long id;
@@ -15,6 +17,8 @@ public class CabinResponse {
     private final Integer price;
     private final Integer cost;
     private final String rules;
+    private final Collection<String> images;
+    private final Collection<AmenityResponse> amenities = new ArrayList<>();
 
     public CabinResponse(Cabin cabin) {
         this.id = cabin.getId();
@@ -27,6 +31,10 @@ public class CabinResponse {
         this.price = cabin.getPrice();
         this.cost = cabin.getCost();
         this.rules = cabin.getRules();
+        this.images = cabin.getImages();
+        for (Amenity a : cabin.getAmenities()) {
+            this.amenities.add(new AmenityResponse(a));
+        }
     }
 
     public Long getId() {
@@ -69,4 +77,11 @@ public class CabinResponse {
         return rules;
     }
 
+    public Collection<String> getImages() {
+        return images;
+    }
+
+    public Collection<AmenityResponse> getAmenities() {
+        return amenities;
+    }
 }
