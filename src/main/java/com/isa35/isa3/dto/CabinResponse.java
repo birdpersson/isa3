@@ -2,6 +2,7 @@ package com.isa35.isa3.dto;
 
 import com.isa35.isa3.model.Amenity;
 import com.isa35.isa3.model.Cabin;
+import com.isa35.isa3.model.Review;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,6 +20,8 @@ public class CabinResponse {
     private final String rules;
     private final Collection<String> images;
     private final Collection<AmenityResponse> amenities = new ArrayList<>();
+    private final Collection<ReviewResponse> reviews = new ArrayList<>();
+    private double rating = 0.0;
 
     public CabinResponse(Cabin cabin) {
         this.id = cabin.getId();
@@ -35,6 +38,13 @@ public class CabinResponse {
         for (Amenity a : cabin.getAmenities()) {
             this.amenities.add(new AmenityResponse(a));
         }
+        for (Review r : cabin.getReviews()) {
+            if (r.getStatus().equals(Review.Status.PENDING)) {
+                this.reviews.add(new ReviewResponse(r));
+                this.rating += r.getRating();
+            }
+        }
+        this.rating = (Math.round(rating / cabin.getReviews().size() * 100)) / 100.00;
     }
 
     public Long getId() {
@@ -83,5 +93,13 @@ public class CabinResponse {
 
     public Collection<AmenityResponse> getAmenities() {
         return amenities;
+    }
+
+    public Collection<ReviewResponse> getReviews() {
+        return reviews;
+    }
+
+    public double getRating() {
+        return rating;
     }
 }

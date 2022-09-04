@@ -20,13 +20,13 @@ public class ReviewService {
 
     public Review create(User guest, Cabin cabin, ReviewDTO dto) {
         Review r = new Review();
-        r.setCabin(cabin);
-        r.setGuest(guest);
-
         r.setStatus(Review.Status.PENDING);
         r.setComment(dto.getComment());
         r.setRating(dto.getRating());
-
+        r.setCabin(cabin);
+        r.setGuest(guest);
+        cabin.addReview(r);
+        guest.addReview(r);
         return repository.save(r);
     }
 
