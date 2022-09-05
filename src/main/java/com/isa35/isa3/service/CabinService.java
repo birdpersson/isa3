@@ -42,8 +42,9 @@ public class CabinService {
     public List<Cabin> findByAvailability(CabinQuery query) {
         List<Cabin> cabins = cabinRepository.findAll();
 
-        cabins = cabins.stream().filter(cabin -> cabin.getName().toLowerCase().contains(query.getName().toLowerCase())).collect(Collectors.toList());
-        cabins = cabins.stream().filter(cabin -> cabin.getAddress().toLowerCase().contains(query.getAddress().toLowerCase())).collect(Collectors.toList());
+
+//        cabins = cabins.stream().filter(cabin -> cabin.getName().toLowerCase().contains(query.getName().toLowerCase())).collect(Collectors.toList());
+//        cabins = cabins.stream().filter(cabin -> cabin.getAddress().toLowerCase().contains(query.getAddress().toLowerCase())).collect(Collectors.toList());
         cabins = cabins.stream().filter(cabin -> {
             Interval availability = cabin.getAvailability();
             Interval interval = Interval.of(query.getStart(), Duration.ofDays(query.getDays()));

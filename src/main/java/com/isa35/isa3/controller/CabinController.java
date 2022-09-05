@@ -19,6 +19,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/cabin")
@@ -43,8 +44,16 @@ public class CabinController {
     private ReservationService reservationService;
 
     @PostMapping("/search")
-    public ResponseEntity<List<CabinResponse>> searchCabins(@RequestBody CabinQuery searchQuery) {
-        List<Cabin> cabins = cabinService.findByAvailability(searchQuery);
+    public ResponseEntity<List<CabinResponse>> searchCabin(@RequestBody CabinQuery query) {
+        List<Cabin> cabins = cabinService.findAll();
+        if (query.getPeople() != null)
+            cabins = cabins.stream().filter(cabin -> cabin.getPeople() >= query.getPeople()).collect(Collectors.toList());
+        if (query.getStart() != null && query.getDays() != null) {
+            Interval interval = Interval.of(query.getStart(), Duration.ofDays(query.getDays()));
+            cabins = cabins.stream().filter(cabin -> cabin.getAvailability().encloses(interval)).collect(Collectors.toList());
+            cabins = cabins.stream().filter(cabin -> cabin.getReservations().stream().noneMatch(reservation ->
+                    (reservation.isCanceled() || !interval.overlaps(reservation.getInterval())))).collect(Collectors.toList());
+        }
         List<CabinResponse> list = new ArrayList<>();
         for (Cabin c : cabins) {
             list.add(new CabinResponse(c));
@@ -53,7 +62,10 @@ public class CabinController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<CabinResponse>> getCabins() {
+    public ResponseEntity<List<CabinResponse>> getCabins(
+            @RequestParam(required = false) Instant start,
+            @RequestParam(required = false) Long duration,
+            @RequestParam(required = false) Integer people) {
         List<Cabin> cabins = cabinService.findAll();
         List<CabinResponse> list = new ArrayList<>();
         for (Cabin c : cabins) {

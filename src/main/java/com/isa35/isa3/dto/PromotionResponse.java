@@ -8,7 +8,8 @@ import java.util.Collection;
 public class PromotionResponse {
     private final Long id;
     private final Long cabinId;
-    private final String interval;
+    private final Instant start;
+    private final Instant end;
     private final Instant expiry;
     private final Integer people;
     private final Integer price;
@@ -18,7 +19,8 @@ public class PromotionResponse {
     public PromotionResponse(Reservation reservation) {
         this.id = reservation.getId();
         this.cabinId = reservation.getCabin().getId();
-        this.interval = reservation.getInterval().toString();
+        this.start = reservation.getStart();
+        this.end = reservation.getEnd();
         this.expiry = reservation.getExpiry();
         this.people = reservation.getPeople();
         this.price = reservation.getPrice();
@@ -34,8 +36,12 @@ public class PromotionResponse {
         return cabinId;
     }
 
-    public String getInterval() {
-        return interval;
+    public Instant getStart() {
+        return start;
+    }
+
+    public Instant getEnd() {
+        return end;
     }
 
     public Instant getExpiry() {
