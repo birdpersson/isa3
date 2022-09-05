@@ -8,6 +8,8 @@ import com.isa35.isa3.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ReviewService {
 
@@ -16,6 +18,10 @@ public class ReviewService {
 
     public Review findById(Long id) {
         return repository.findById(id).orElseGet(null);
+    }
+
+    public List<Review> findAll() {
+        return repository.findAll();
     }
 
     public Review create(User guest, Cabin cabin, ReviewDTO dto) {
@@ -30,4 +36,13 @@ public class ReviewService {
         return repository.save(r);
     }
 
+    public Review accept(Review r) {
+        r.setStatus(Review.Status.ACCEPTED);
+        return repository.save(r);
+    }
+
+    public Review reject(Review r) {
+        r.setStatus(Review.Status.REJECTED);
+        return repository.save(r);
+    }
 }

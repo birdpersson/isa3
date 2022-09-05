@@ -45,12 +45,12 @@ public class CabinResponse {
                 this.promotions.add(new PromotionResponse(p));
         }
         for (Review r : cabin.getReviews()) {
-            if (r.getStatus().equals(Review.Status.PENDING)) {
+            if (r.getStatus().equals(Review.Status.ACCEPTED)) {
                 this.reviews.add(new ReviewResponse(r));
                 this.rating += r.getRating();
             }
         }
-        this.rating = (Math.round(rating / cabin.getReviews().size() * 100)) / 100.00;
+        this.rating = (Math.round(rating / reviews.size() * 100)) / 100.00;
     }
 
     public Long getId() {
