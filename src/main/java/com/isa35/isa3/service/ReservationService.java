@@ -35,6 +35,11 @@ public class ReservationService {
         return repository.save(r);
     }
 
+    public Reservation cancel(Reservation r) {
+        r.setType(Reservation.Type.CANCELED);
+        return repository.save(r);
+    }
+
     public Reservation promote(Cabin cabin, ReservationRequest dto) {
         Reservation r = new Reservation();
         r.setType(Reservation.Type.PROMOTION);

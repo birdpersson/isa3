@@ -2,6 +2,7 @@ package com.isa35.isa3.dto;
 
 import com.isa35.isa3.model.Amenity;
 import com.isa35.isa3.model.Cabin;
+import com.isa35.isa3.model.Reservation;
 import com.isa35.isa3.model.Review;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class CabinResponse {
     private final Integer cost;
     private final String rules;
     private final Collection<String> images;
+    private final Collection<PromotionResponse> promotions = new ArrayList<>();
     private final Collection<AmenityResponse> amenities = new ArrayList<>();
     private final Collection<ReviewResponse> reviews = new ArrayList<>();
     private double rating = 0.0;
@@ -37,6 +39,10 @@ public class CabinResponse {
         this.images = cabin.getImages();
         for (Amenity a : cabin.getAmenities()) {
             this.amenities.add(new AmenityResponse(a));
+        }
+        for (Reservation p : cabin.getReservations()) {
+            if (p.isPromotion() && !p.isExpired())
+                this.promotions.add(new PromotionResponse(p));
         }
         for (Review r : cabin.getReviews()) {
             if (r.getStatus().equals(Review.Status.PENDING)) {
@@ -89,6 +95,10 @@ public class CabinResponse {
 
     public Collection<String> getImages() {
         return images;
+    }
+
+    public Collection<PromotionResponse> getPromotions() {
+        return promotions;
     }
 
     public Collection<AmenityResponse> getAmenities() {

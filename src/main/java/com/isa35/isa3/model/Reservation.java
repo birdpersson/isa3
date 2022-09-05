@@ -3,12 +3,13 @@ package com.isa35.isa3.model;
 import org.threeten.extra.Interval;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 
 @Entity
 public class Reservation {
-    public enum Type {RESERVATION, PROMOTION}
+    public enum Type {RESERVATION, PROMOTION, CANCELED}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -138,4 +139,11 @@ public class Reservation {
         return type.equals(Type.PROMOTION);
     }
 
+    public boolean isCanceled() {
+        return type.equals(Type.CANCELED);
+    }
+
+    public boolean isThreeDaysBeforeStart() {
+        return Interval.of(Instant.now(), Duration.ofDays(3)).getEnd().isBefore(start);
+    }
 }

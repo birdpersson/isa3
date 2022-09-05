@@ -121,9 +121,12 @@ public class CabinController {
         if (!cabin.getAvailability().encloses(interval))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        for (Reservation reservation : cabin.getReservations()) {
-            System.out.println("Intervals:" + reservation.getInterval());
-            if (interval.overlaps(reservation.getInterval()))
+        for (Reservation r : cabin.getReservations()) {
+            System.out.println("Intervals:" + r.getInterval());
+            if (!r.isCanceled() && interval.overlaps(r.getInterval()))
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+            if ((r.isCanceled() && interval.equals(r.getInterval())) && user.getId().equals(r.getGuest().getId()))
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Reservation reservation = reservationService.create(user, cabin, dto);
@@ -143,9 +146,9 @@ public class CabinController {
         if (!cabin.getAvailability().encloses(interval))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        for (Reservation reservation : cabin.getReservations()) {
-            System.out.println("Intervals:" + reservation.getInterval());
-            if (interval.overlaps(reservation.getInterval()))
+        for (Reservation r : cabin.getReservations()) {
+            System.out.println("Intervals:" + r.getInterval());
+            if (!r.isCanceled() && interval.overlaps(r.getInterval()))
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Reservation promotion = reservationService.promote(cabin, dto);

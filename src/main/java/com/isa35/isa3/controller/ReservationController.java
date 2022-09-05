@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/reservation")
@@ -26,18 +29,35 @@ public class ReservationController {
     @Autowired
     private ReservationService reservationService;
 
-    @PutMapping("/{id}")
+    @GetMapping("/")
+    public ResponseEntity<List<ReservationResponse>> getReservations(HttpServletRequest request) {
+        User user = userService.findByUsername(tokenUtils.getUsernameFromToken(tokenUtils.getToken(request)));
+        Collection<Reservation> reservations = user.getReservations();
+        List<ReservationResponse> list = new ArrayList<>();
+        for (Reservation r : reservations) {
+            list.add(new ReservationResponse(r));
+        }
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/claim")
     public ResponseEntity<ReservationResponse> claimPromotion(@PathVariable String id, HttpServletRequest request) {
         User user = userService.findByUsername(tokenUtils.getUsernameFromToken(tokenUtils.getToken(request)));
         Reservation promotion = reservationService.findById(Long.parseLong(id));
-        if (!promotion.isPromotion() || promotion.isExpired())
+        if (promotion.isPromotion() && promotion.isExpired())
             return new ResponseEntity<>(HttpStatus.GONE);
         Reservation reservation = reservationService.claim(user, promotion);
         return new ResponseEntity<>(new ReservationResponse(reservation), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}")
-    public void cancelReservation() {
-
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<ReservationResponse> cancelReservation(@PathVariable String id, HttpServletRequest request) {
+        String username = tokenUtils.getUsernameFromToken(tokenUtils.getToken(request));
+        Reservation reservation = reservationService.findById(Long.parseLong(id));
+        if (!reservation.getGuest().getUsername().equals(username))
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        if (!reservation.isThreeDaysBeforeStart())
+            return new ResponseEntity<>(HttpStatus.GONE);
+        return new ResponseEntity<>(new ReservationResponse(reservationService.cancel(reservation)), HttpStatus.CREATED);
     }
 }
