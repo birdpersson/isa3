@@ -1,6 +1,6 @@
 package com.isa35.isa3.controller;
 
-import com.isa35.isa3.dto.ReservationRequest;
+import com.isa35.isa3.dto.ReservationResponse;
 import com.isa35.isa3.model.Reservation;
 import com.isa35.isa3.model.User;
 import com.isa35.isa3.security.TokenUtils;
@@ -26,23 +26,14 @@ public class ReservationController {
     @Autowired
     private ReservationService reservationService;
 
-    @PostMapping("/{cabinId}") // Create Reservation
-    public ResponseEntity<Reservation> createReservation(@PathVariable String cabinId, @RequestBody ReservationRequest dto, HttpServletRequest request) {
-        String username = tokenUtils.getUsernameFromToken(tokenUtils.getToken(request));
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    @PutMapping("/{id}") // Accept Reservation
-    public void acceptReservation(HttpServletRequest request) {
-        String username = tokenUtils.getUsernameFromToken(tokenUtils.getToken(request));
-
-    }
-
-    @PutMapping("/{id}/promotion")
-    public ResponseEntity<Reservation> acceptPromotion(@PathVariable String id, HttpServletRequest request) {
+    @PutMapping("/{id}")
+    public ResponseEntity<ReservationResponse> claimPromotion(@PathVariable String id, HttpServletRequest request) {
         User user = userService.findByUsername(tokenUtils.getUsernameFromToken(tokenUtils.getToken(request)));
-
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        Reservation promotion = reservationService.findById(Long.parseLong(id));
+        if (!promotion.isPromotion() || promotion.isExpired())
+            return new ResponseEntity<>(HttpStatus.GONE);
+        Reservation reservation = reservationService.claim(user, promotion);
+        return new ResponseEntity<>(new ReservationResponse(reservation), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")

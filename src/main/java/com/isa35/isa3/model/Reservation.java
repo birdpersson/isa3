@@ -130,4 +130,12 @@ public class Reservation {
         this.amenities = amenities;
     }
 
+    public boolean isExpired() {
+        return Instant.now().isAfter(expiry);
+    }
+
+    public boolean isPromotion() {
+        return type.equals(Type.PROMOTION);
+    }
+
 }

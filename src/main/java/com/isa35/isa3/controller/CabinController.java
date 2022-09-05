@@ -16,6 +16,7 @@ import org.threeten.extra.Interval;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,9 +131,25 @@ public class CabinController {
     }
 
     @PostMapping("/{id}/promotion")
-    public ResponseEntity<Reservation> createPromotion(@PathVariable String id, @RequestBody ReservationRequest dto) {
+    public ResponseEntity<PromotionResponse> createPromotion(@PathVariable String id, @RequestBody ReservationRequest dto) {
         Cabin cabin = cabinService.findById(Long.parseLong(id));
-        return new ResponseEntity<>(reservationService.promote(cabin, dto), HttpStatus.CREATED);
+        Interval validFor = Interval.of(Instant.now(), dto.getExpiry());
+        Interval interval = Interval.of(dto.getStart(), Duration.ofDays(dto.getDuration()));
+
+        System.out.println("Available:" + cabin.getAvailability());
+        System.out.println("Promoting:" + interval);
+        System.out.println("ExpiresAt:" + validFor);
+
+        if (!cabin.getAvailability().encloses(interval))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        for (Reservation reservation : cabin.getReservations()) {
+            System.out.println("Intervals:" + reservation.getInterval());
+            if (interval.overlaps(reservation.getInterval()))
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Reservation promotion = reservationService.promote(cabin, dto);
+        return new ResponseEntity<>(new PromotionResponse(promotion), HttpStatus.CREATED);
     }
 
 }

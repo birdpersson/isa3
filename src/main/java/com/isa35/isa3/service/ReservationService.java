@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.threeten.extra.Interval;
 
 import java.time.Duration;
-import java.time.Instant;
 
 @Service
 public class ReservationService {
@@ -49,14 +48,12 @@ public class ReservationService {
         return repository.save(r);
     }
 
-    public Reservation claim(User user, Reservation reservation) {
-
-        if (Instant.now().isBefore(reservation.getExpiry())) {
-            reservation.setType(Reservation.Type.RESERVATION);
-            reservation.setGuest(user);
-        }
-
-        return repository.save(reservation);
+    public Reservation claim(User guest, Reservation r) {
+        r.setType(Reservation.Type.RESERVATION);
+        r.setExpiry(null);
+        r.setGuest(guest);
+        guest.addReservation(r);
+        return repository.save(r);
     }
 
 }
