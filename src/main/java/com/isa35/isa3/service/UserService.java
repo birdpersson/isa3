@@ -18,7 +18,7 @@ import java.util.List;
 public class UserService implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository repository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -31,11 +31,15 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username);
+        return repository.findByUsername(username);
+    }
+
+    public User findById(Long id) {
+        return repository.findById(id).orElseGet(null);
     }
 
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return repository.findByUsername(username);
     }
 
     public User save(UserRequest userRequest) {
@@ -54,7 +58,7 @@ public class UserService implements UserDetailsService {
         List<Authority> auth = authService.findByName("ROLE_USER");
         u.setAuthorities(auth);
 
-        return userRepository.save(u);
+        return repository.save(u);
     }
 
 }
